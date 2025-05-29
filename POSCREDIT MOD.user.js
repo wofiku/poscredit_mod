@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         POSCREDIT MOD
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.4
 // @description  Мод для POSCREDIT
 // @author       wofiku
 // @match        https://*.b2pos.ru/*
@@ -98,6 +98,16 @@ const mod_css = document.styleSheets[0];
 // ----------
 if (mod_current_site == 'bank.b2pos.ru'){
 	// ФУНКЦИИ
+	// ВЕРНУТЬ копируемость текста в шапке заявки
+	const bank_header_css = document.styleSheets[3]; // Нужный нам CSS
+
+	for (let i = 0; i < bank_header_css.cssRules.length; i++) {
+		if (bank_header_css.cssRules[i].selectorText == '.search-results-table__cell-content-value'){
+			bank_header_css.cssRules[i].style.userSelect = 'all';
+			break;
+		};
+	};
+
 	// Перепрыгнуть в заявку
 	function mod_blank_jump(blank_id){
 		window.location.href = `/search/profile${blank_id}/`;
@@ -308,6 +318,7 @@ if (mod_current_site == 'cp.b2pos.ru'){
 
 		// Загрузка фото с ПК (в редактировании ЮЛ)
 		function mod_cp_photo_from_pc(){
+			html_find('[data-id="services_settings"]').click(); // Нажимает "Настройки услуг", чтобы не вылезало окна о "недостающих данных"
 			html_find('input[name="is_allowPcPhoto"]').checked = true; // Нажимает на флажок загрузки фото с ПК
 			window.confirm = () => true; // Убирает "Вы проверили все данные, заполнили «Условия сотрудничества» и хотите сохранить?"
 			html_find_id('companyAdd').click(); // Нажимает "сохранить"
